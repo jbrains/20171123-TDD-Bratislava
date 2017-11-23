@@ -8,7 +8,7 @@ public class AddFractionsTest {
     public void zeroPlusZero() throws Exception {
         final Fraction zero = new Fraction(0);
         Fraction sum = zero.plus(zero);
-        Assert.assertEquals(0, sum.intValue());
+        Assert.assertEquals(new Fraction(0), sum);
     }
 
     @Test
@@ -16,33 +16,31 @@ public class AddFractionsTest {
         final Fraction zero = new Fraction(0);
         final Fraction six = new Fraction(6);
         Fraction sum = six.plus(zero);
-        Assert.assertEquals(6, sum.intValue());
+        Assert.assertEquals(new Fraction(6), sum);
     }
 
     @Test
     public void zeroPlusNotZero() throws Exception {
         Fraction sum = new Fraction(0).plus(new Fraction(12));
-        Assert.assertEquals(12, sum.intValue());
+        Assert.assertEquals(new Fraction(12), sum);
     }
 
     @Test
     public void notZeroPlusNotZero() throws Exception {
         Fraction sum = new Fraction(4).plus(new Fraction(13));
-        Assert.assertEquals(17, sum.intValue());
+        Assert.assertEquals(new Fraction(17), sum);
     }
 
     @Test
     public void nonIntegersWithTheSameDenominator() throws Exception {
         final Fraction sum = new Fraction(1, 5).plus(new Fraction(2, 5));
-        Assert.assertEquals(3, sum.getNumerator());
-        Assert.assertEquals(5, sum.getDenominator());
+        Assert.assertEquals(new Fraction(3, 5), sum);
     }
 
     @Test
     public void coprimeDenominators() throws Exception {
         final Fraction sum = new Fraction(3, 7).plus(new Fraction(2, 3));
-        Assert.assertEquals(23, sum.getNumerator());
-        Assert.assertEquals(21, sum.getDenominator());
+        Assert.assertEquals(new Fraction(23, 21), sum);
     }
 
     public static class Fraction {
