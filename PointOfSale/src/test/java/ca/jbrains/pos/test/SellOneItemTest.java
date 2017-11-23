@@ -11,9 +11,9 @@ public class SellOneItemTest {
     @Test
     public void productFound() throws Exception {
         final Display display = new Display();
-        final Sale sale = new Sale(display, new HashMap<String, String>() {{
+        final Sale sale = new Sale(new HashMap<String, String>() {{
             put("1234", "€ 5.50");
-        }});
+        }}, display);
 
         sale.onBarcode("1234");
 
@@ -23,9 +23,9 @@ public class SellOneItemTest {
     @Test
     public void anotherProductFound() throws Exception {
         final Display display = new Display();
-        final Sale sale = new Sale(display, new HashMap<String, String>() {{
+        final Sale sale = new Sale(new HashMap<String, String>() {{
             put("2345", "€ 1.87");
-        }});
+        }}, display);
 
         sale.onBarcode("2345");
 
@@ -35,10 +35,10 @@ public class SellOneItemTest {
     @Test
     public void productNotFound() throws Exception {
         final Display display = new Display();
-        final Sale sale = new Sale(display, new HashMap<String, String>() {{
+        final Sale sale = new Sale(new HashMap<String, String>() {{
             put("1234", "€ 5.50");
             put("2345", "€ 1.87");
-        }});
+        }}, display);
 
         sale.onBarcode("000");
 
@@ -48,7 +48,7 @@ public class SellOneItemTest {
     @Test
     public void emptyBarcode() throws Exception {
         final Display display = new Display();
-        final Sale sale = new Sale(display, Collections.emptyMap());
+        final Sale sale = new Sale(Collections.emptyMap(), display);
 
         sale.onBarcode("");
 
@@ -56,10 +56,10 @@ public class SellOneItemTest {
     }
 
     public static class Sale {
-        private final Display display;
         private final Map<String, String> pricesByBarcode;
+        private final Display display;
 
-        public Sale(final Display display, final Map<String, String> pricesByBarcode) {
+        public Sale(final Map<String, String> pricesByBarcode, final Display display) {
             this.display = display;
             this.pricesByBarcode = pricesByBarcode;
         }
