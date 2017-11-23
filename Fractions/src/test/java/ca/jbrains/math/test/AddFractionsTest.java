@@ -38,6 +38,13 @@ public class AddFractionsTest {
         Assert.assertEquals(5, sum.getDenominator());
     }
 
+    @Test
+    public void coprimeDenominators() throws Exception {
+        final Fraction sum = new Fraction(3, 7).plus(new Fraction(2, 3));
+        Assert.assertEquals(23, sum.getNumerator());
+        Assert.assertEquals(21, sum.getDenominator());
+    }
+
     public static class Fraction {
         private int numerator;
         private int denominator;
@@ -54,8 +61,12 @@ public class AddFractionsTest {
         public Fraction plus(final Fraction that) {
             if (this.denominator == 1)
                 return new Fraction(this.numerator + that.numerator);
-            else
+            else if (this.denominator == that.denominator)
                 return new Fraction(this.numerator + that.numerator, this.denominator);
+            else
+                return new Fraction(
+                        this.numerator * that.denominator + that.numerator * this.denominator,
+                        this.denominator * that.denominator);
         }
 
         public int intValue() {
