@@ -26,7 +26,7 @@ public class Fraction {
             } else {
                 return parseAsInteger(text);
             }
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException | IllegalStateException handled) {
+        } catch (NumberFormatException | IllegalStateException handled) {
             throw new IllegalArgumentException(
                     String.format("I don't know how to parse a Fraction from \"%s\"", text));
         }
