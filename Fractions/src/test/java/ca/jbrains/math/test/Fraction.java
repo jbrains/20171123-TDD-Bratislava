@@ -17,8 +17,10 @@ public class Fraction {
     }
 
     public static Fraction parse(final String text) {
-        if (text.contains("/"))
-            return new Fraction(1, 2);
+        if (text.contains("/")) {
+            final String[] parts = text.split("\\/");
+            return new Fraction(Integer.parseInt(parts[0], 10), Integer.parseInt(parts[1], 10));
+        }
         else
             return new Fraction(Integer.parseInt(text, 10));
     }
