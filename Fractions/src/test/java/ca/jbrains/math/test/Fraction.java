@@ -17,12 +17,16 @@ public class Fraction {
     }
 
     public static Fraction parse(final String text) {
-        if (text.contains("/")) {
-            final String[] parts = text.split("\\/");
-            return new Fraction(Integer.parseInt(parts[0], 10), Integer.parseInt(parts[1], 10));
+        try {
+            if (text.contains("/")) {
+                final String[] parts = text.split("\\/");
+                return new Fraction(Integer.parseInt(parts[0], 10), Integer.parseInt(parts[1], 10));
+            } else
+                return new Fraction(Integer.parseInt(text, 10));
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException handled) {
+            throw new IllegalArgumentException(
+                    String.format("I don't know how to parse a Fraction from \"%s\"", text));
         }
-        else
-            return new Fraction(Integer.parseInt(text, 10));
     }
 
     public Fraction plus(final Fraction that) {

@@ -20,4 +20,16 @@ class ParseFractionSpec extends Specification {
         "5/-3" | new Fraction(-5, 3)
     }
 
+    @Unroll
+    def "\"#text\" does not parse as a fraction"() {
+        when:
+        Fraction.parse(text)
+
+        then:
+        thrown(IllegalArgumentException)
+
+        where:
+        text << ["", " ", "\t", "/", "1/", "/8", "a/b", "a/6", "7/b", "abc"]
+    }
+
 }
