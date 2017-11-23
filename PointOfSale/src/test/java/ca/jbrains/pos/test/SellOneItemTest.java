@@ -3,6 +3,7 @@ package ca.jbrains.pos.test;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +48,7 @@ public class SellOneItemTest {
     @Test
     public void emptyBarcode() throws Exception {
         final Display display = new Display();
-        final Sale sale = new Sale(display, new HashMap<String, String>() {{
-        }});
+        final Sale sale = new Sale(display, Collections.emptyMap());
 
         sale.onBarcode("");
 
