@@ -74,7 +74,7 @@ public class AddFractionsTest {
 
         @Override
         public int hashCode() {
-            return 0;
+            return numerator * 137 + denominator * 67;
         }
 
         @Override
