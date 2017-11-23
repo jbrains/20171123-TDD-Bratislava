@@ -28,8 +28,9 @@ public class Fraction {
                 return new Fraction(
                         Integer.parseInt(matcher.group("numerator"), 10),
                         Integer.parseInt(matcher.group("denominator"), 10));
-            } else
+            } else {
                 return new Fraction(Integer.parseInt(text, 10));
+            }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException | IllegalStateException handled) {
             throw new IllegalArgumentException(
                     String.format("I don't know how to parse a Fraction from \"%s\"", text));
