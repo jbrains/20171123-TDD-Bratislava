@@ -1,5 +1,8 @@
 package ca.jbrains.math.test;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class Fraction {
     private int numerator;
     private int denominator;
@@ -19,11 +22,15 @@ public class Fraction {
     public static Fraction parse(final String text) {
         try {
             if (text.contains("/")) {
-                final String[] parts = text.split("\\/");
-                return new Fraction(Integer.parseInt(parts[0], 10), Integer.parseInt(parts[1], 10));
+                final Matcher matcher = Pattern.compile("(?<numerator>([\\-]?)\\d+)/(?<denominator>([\\-]?)\\d+)").matcher(text);
+                // SMELL Programming by accident. Thanks, Java.
+                matcher.matches();
+                return new Fraction(
+                        Integer.parseInt(matcher.group("numerator"), 10),
+                        Integer.parseInt(matcher.group("denominator"), 10));
             } else
                 return new Fraction(Integer.parseInt(text, 10));
-        } catch (NumberFormatException | ArrayIndexOutOfBoundsException handled) {
+        } catch (NumberFormatException | ArrayIndexOutOfBoundsException | IllegalStateException handled) {
             throw new IllegalArgumentException(
                     String.format("I don't know how to parse a Fraction from \"%s\"", text));
         }
