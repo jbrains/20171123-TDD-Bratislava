@@ -17,10 +17,7 @@ public class Fraction {
     }
 
     public static Fraction parse(final String text) {
-        if ("0".equals(text))
-            return new Fraction(0);
-        else
-            return new Fraction(5);
+        return new Fraction(Integer.parseInt(text, 10));
     }
 
     public Fraction plus(final Fraction that) {
