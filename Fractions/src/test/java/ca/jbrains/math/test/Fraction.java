@@ -22,19 +22,27 @@ public class Fraction {
     public static Fraction parse(final String text) {
         try {
             if (text.contains("/")) {
-                final Matcher matcher = Pattern.compile("(?<numerator>([\\-]?)\\d+)/(?<denominator>([\\-]?)\\d+)").matcher(text);
-                // SMELL Programming by accident. Thanks, Java.
-                matcher.matches();
-                return new Fraction(
-                        Integer.parseInt(matcher.group("numerator"), 10),
-                        Integer.parseInt(matcher.group("denominator"), 10));
+                return parseAsFraction(text);
             } else {
-                return new Fraction(Integer.parseInt(text, 10));
+                return parseAsInteger(text);
             }
         } catch (NumberFormatException | ArrayIndexOutOfBoundsException | IllegalStateException handled) {
             throw new IllegalArgumentException(
                     String.format("I don't know how to parse a Fraction from \"%s\"", text));
         }
+    }
+
+    private static Fraction parseAsInteger(final String text) {
+        return new Fraction(Integer.parseInt(text, 10));
+    }
+
+    private static Fraction parseAsFraction(final String text) {
+        final Matcher matcher = Pattern.compile("(?<numerator>([\\-]?)\\d+)/(?<denominator>([\\-]?)\\d+)").matcher(text);
+        // SMELL Programming by accident. Thanks, Java.
+        matcher.matches();
+        return new Fraction(
+                Integer.parseInt(matcher.group("numerator"), 10),
+                Integer.parseInt(matcher.group("denominator"), 10));
     }
 
     public Fraction plus(final Fraction that) {
