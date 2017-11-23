@@ -13,6 +13,7 @@ class ParseFractionSpec extends Specification {
         where:
         text | fraction
         "0" | new Fraction(0)
+        "5" | new Fraction(5)
     }
 
 }
