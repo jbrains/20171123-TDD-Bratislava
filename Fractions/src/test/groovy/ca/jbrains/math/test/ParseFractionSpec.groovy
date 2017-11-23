@@ -14,6 +14,7 @@ class ParseFractionSpec extends Specification {
         text | fraction
         "0" | new Fraction(0)
         "5" | new Fraction(5)
+        "-2" | new Fraction(-2)
     }
 
 }
