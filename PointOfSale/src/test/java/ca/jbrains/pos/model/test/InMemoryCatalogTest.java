@@ -8,31 +8,15 @@ import org.junit.Test;
 
 import java.util.Map;
 
-public class InMemoryCatalogTest {
-    @Test
-    public void productFound() throws Exception {
-        final Price matchingPrice = Price.cents(1250);
-
-        Assert.assertEquals(
-                matchingPrice,
-                catalogWith("::any barcode::", matchingPrice)
-                        .findPrice("::any barcode::"));
-    }
-
-    private Catalog catalogWith(final String barcode, final Price matchingPrice) {
+public class InMemoryCatalogTest extends FindPriceInCatalogContract {
+    @Override
+    protected Catalog catalogWith(final String barcode, final Price matchingPrice) {
         return new InMemoryCatalog(
                     HashMap.of(barcode, matchingPrice).toJavaMap());
     }
 
-    @Test
-    public void productNotFound() throws Exception {
-        Assert.assertEquals(
-                null,
-                catalogWithout("::any missing barcode::")
-                        .findPrice("::any missing barcode::"));
-    }
-
-    private Catalog catalogWithout(final String barcodeToAvoid) {
+    @Override
+    protected Catalog catalogWithout(final String barcodeToAvoid) {
         return new InMemoryCatalog(
                     HashMap.<String, Price>empty().toJavaMap());
     }
