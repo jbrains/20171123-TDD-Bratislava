@@ -1,5 +1,6 @@
 package ca.jbrains.pos.model.test;
 
+import ca.jbrains.pos.controller.test.Catalog;
 import ca.jbrains.pos.controller.test.Price;
 import io.vavr.collection.HashMap;
 import org.junit.Assert;
@@ -25,7 +26,7 @@ public class InMemoryCatalogTest {
         Assert.assertEquals(null, catalog.findPrice("::any missing barcode::"));
     }
 
-    public static class InMemoryCatalog {
+    public static class InMemoryCatalog implements Catalog {
         private final Map<String, Price> pricesByBarcode;
 
         public InMemoryCatalog(final Map<String, Price> pricesByBarcode) {
