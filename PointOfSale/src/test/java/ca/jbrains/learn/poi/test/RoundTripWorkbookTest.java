@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.junit.*;
 
@@ -73,6 +74,25 @@ public class RoundTripWorkbookTest {
         Assert.assertEquals(
                 magicNumberForSlovakEuroCurrencyFormat,
                 firstMoneyAmountCell.getCellStyle().getDataFormat());
+    }
+
+    @Test
+    public void ifItLooksLikeANumberThenItIsANumber() throws Exception {
+        final Cell firstStringsCell = firstBodyCellOf(columnOf(0, sampleDataWorksheet()));
+        // Since the value looks like a number, HSSF treats it as a number.
+        Assert.assertEquals(CellType.NUMERIC, firstStringsCell.getCellTypeEnum());
+    }
+
+    @Test
+    public void readCellValueAsBarcode() throws Exception {
+        final Cell firstStringsCell = firstBodyCellOf(columnOf(0, sampleDataWorksheet()));
+        final String barcode = asBarcode(firstStringsCell);
+        Assert.assertEquals("12345", barcode);
+    }
+
+    private String asBarcode(final Cell firstStringsCell) {
+        firstStringsCell.setCellType(CellType.STRING);
+        return firstStringsCell.getStringCellValue();
     }
 
     private List<Cell> columnOf(final int columnIndex, final HSSFSheet worksheet) throws IOException {
