@@ -1,5 +1,7 @@
 package ca.jbrains.pos.ui.test;
 
+import ca.jbrains.pos.controller.test.NormalizeCommands;
+import ca.jbrains.pos.controller.test.RemoveWhitespace;
 import io.vavr.collection.List;
 import io.vavr.collection.Stream;
 import io.vavr.collection.Traversable;
@@ -74,7 +76,7 @@ public class CommandLineInterfaceTest {
     }
 
     private void interpretAsCommands(final Reader commandSource) throws IOException {
-        interpretCommands(linesFrom(commandSource));
+        interpretCommands(new RemoveWhitespace().normalizeCommands(linesFrom(commandSource)));
     }
 
     private void interpretCommands(final Traversable<String> lines) {
@@ -85,13 +87,9 @@ public class CommandLineInterfaceTest {
         barcodeScannedListener.onBarcode(commandText);
     }
 
-    private Traversable<String> linesFrom(final Reader commandSource) throws IOException {
+    private Stream<String> linesFrom(final Reader commandSource) {
         final BufferedReader bufferedCommandSource = new BufferedReader(commandSource);
-        return normalize(Stream.ofAll(bufferedCommandSource.lines()));
-    }
-
-    private Traversable<String> normalize(final Traversable<String> lines) {
-        return lines.filter(line -> !line.isEmpty());
+        return Stream.ofAll(bufferedCommandSource.lines());
     }
 
     public interface BarcodeScannedListener {
