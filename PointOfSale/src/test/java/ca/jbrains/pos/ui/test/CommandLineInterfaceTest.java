@@ -47,6 +47,24 @@ public class CommandLineInterfaceTest {
         readThenProcessLines(List.of("::barcode 1::", "::barcode 2::", "::barcode 3::"));
     }
 
+    @Test
+    public void severalCommandsWithWhitespace() throws Exception {
+        context.checking(new Expectations() {{
+            oneOf(barcodeScannedListener).onBarcode("::barcode 1::");
+            oneOf(barcodeScannedListener).onBarcode("::barcode 2::");
+            oneOf(barcodeScannedListener).onBarcode("::barcode 3::");
+        }});
+
+        readThenProcessLines(List.of(
+                "",
+                "::barcode 1::",
+                "",
+                "::barcode 2::",
+                "",
+                "::barcode 3::",
+                ""));
+    }
+
     private void readThenProcessLines(final Traversable<String> lines) throws IOException {
         interpretAsCommands(readLines(lines));
     }
@@ -69,7 +87,11 @@ public class CommandLineInterfaceTest {
 
     private Traversable<String> linesFrom(final Reader commandSource) throws IOException {
         final BufferedReader bufferedCommandSource = new BufferedReader(commandSource);
-        return Stream.ofAll(bufferedCommandSource.lines());
+        return normalize(Stream.ofAll(bufferedCommandSource.lines()));
+    }
+
+    private Traversable<String> normalize(final Traversable<String> lines) {
+        return lines.filter(line -> !line.isEmpty());
     }
 
     public interface BarcodeScannedListener {
