@@ -12,18 +12,29 @@ public class InMemoryCatalogTest {
     @Test
     public void productFound() throws Exception {
         final Price matchingPrice = Price.cents(1250);
-        final InMemoryCatalog catalog = new InMemoryCatalog(
-                HashMap.of("::any barcode::", matchingPrice).toJavaMap());
 
-        Assert.assertEquals(matchingPrice, catalog.findPrice("::any barcode::"));
+        Assert.assertEquals(
+                matchingPrice,
+                catalogWith("::any barcode::", matchingPrice)
+                        .findPrice("::any barcode::"));
+    }
+
+    private Catalog catalogWith(final String barcode, final Price matchingPrice) {
+        return new InMemoryCatalog(
+                    HashMap.of(barcode, matchingPrice).toJavaMap());
     }
 
     @Test
     public void productNotFound() throws Exception {
-        final InMemoryCatalog catalog = new InMemoryCatalog(
-                HashMap.<String, Price>empty().toJavaMap());
+        Assert.assertEquals(
+                null,
+                catalogWithout("::any missing barcode::")
+                        .findPrice("::any missing barcode::"));
+    }
 
-        Assert.assertEquals(null, catalog.findPrice("::any missing barcode::"));
+    private Catalog catalogWithout(final String barcodeToAvoid) {
+        return new InMemoryCatalog(
+                    HashMap.<String, Price>empty().toJavaMap());
     }
 
     public static class InMemoryCatalog implements Catalog {
