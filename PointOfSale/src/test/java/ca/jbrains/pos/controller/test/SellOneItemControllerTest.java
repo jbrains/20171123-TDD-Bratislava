@@ -2,19 +2,25 @@ package ca.jbrains.pos.controller.test;
 
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 public class SellOneItemControllerTest {
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
+    private Display display;
+    private Catalog catalog;
+
+    @Before
+    public void setUp() throws Exception {
+        catalog = context.mock(Catalog.class);
+        display = context.mock(Display.class);
+    }
 
     @Test
     public void productFound() throws Exception {
         final Price matchingPrice = Price.cents(795);
-
-        final Catalog catalog = context.mock(Catalog.class);
-        final Display display = context.mock(Display.class);
 
         context.checking(new Expectations() {{
             allowing(catalog).findPrice(with("12345"));
@@ -28,9 +34,6 @@ public class SellOneItemControllerTest {
 
     @Test
     public void productNotFound() throws Exception {
-        final Catalog catalog = context.mock(Catalog.class);
-        final Display display = context.mock(Display.class);
-
         context.checking(new Expectations() {{
             allowing(catalog).findPrice(with("12345"));
             will(returnValue(null));
@@ -43,16 +46,11 @@ public class SellOneItemControllerTest {
 
     @Test
     public void emptyBarcode() throws Exception {
-        final Catalog catalog = context.mock(Catalog.class);
-        final Display display = context.mock(Display.class);
-
         context.checking(new Expectations() {{
-            ignoring(catalog);
-            
             oneOf(display).displayEmptyBarcodeMessage();
         }});
         
-        new SellOneItemController(catalog, display).onBarcode("");
+        new SellOneItemController(null, display).onBarcode("");
     }
 
     public interface Catalog {
@@ -92,7 +90,7 @@ public class SellOneItemControllerTest {
                 display.displayEmptyBarcodeMessage();
                 return;
             }
-            
+
             final Price price = catalog.findPrice(barcode);
             if (price == null)
                 display.displayProductNotFoundMessage(barcode);
