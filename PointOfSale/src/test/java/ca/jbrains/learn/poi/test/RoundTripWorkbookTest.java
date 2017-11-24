@@ -5,6 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 import org.junit.*;
 
 import java.io.File;
@@ -12,6 +13,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
+import static org.apache.poi.ss.usermodel.Row.MissingCellPolicy.RETURN_BLANK_AS_NULL;
 import static org.hamcrest.Matchers.is;
 
 public class RoundTripWorkbookTest {
@@ -52,9 +54,24 @@ public class RoundTripWorkbookTest {
     }
 
     @Test
-    @Ignore("WIP")
     public void readCellValuesAsPlainNumbers() throws Exception {
-        Assert.fail("Not yet implemented");
+        final HSSFSheet sampleDataWorksheet = sampleDataWorksheet();
+        final List<Cell> plainNumbersColumn = columnOf(2, bodyRowsOf(rowsOf(sampleDataWorksheet)));
+        Assert.assertEquals(
+                List.of(12.0d, 35.0d, 46.0d, 57.0d),
+                plainNumbersColumn.map(Cell::getNumericCellValue));
+    }
+
+    private List<Cell> columnOf(final int columnIndex, final List<Row> bodyRows) {
+        return bodyRows.map(each -> each.getCell(columnIndex, RETURN_BLANK_AS_NULL));
+    }
+
+    private List<Row> rowsOf(final HSSFSheet sampleDataWorksheet) {
+        return List.ofAll(() -> sampleDataWorksheet.iterator());
+    }
+
+    private List<Row> bodyRowsOf(final List<Row> table) {
+        return table.drop(1);
     }
 
     private HSSFRow headerRow() throws IOException {
