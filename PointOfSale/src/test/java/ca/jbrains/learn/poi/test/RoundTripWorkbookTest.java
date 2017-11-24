@@ -5,10 +5,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
-import org.junit.Assert;
-import org.junit.Assume;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,7 +41,7 @@ public class RoundTripWorkbookTest {
 
     @Test
     public void readHeaderRowCellValuesAsText() throws Exception {
-        final HSSFRow headerRow = sanityCheckForWorkbook();
+        final HSSFRow headerRow = headerRow();
 
         final List<Cell> cellsInFirstRowAsList = List.ofAll(() -> headerRow.cellIterator());
         final List<String> cellValuesInFirstRowAsText = cellsInFirstRowAsList.map(Cell::getStringCellValue);
@@ -54,15 +51,26 @@ public class RoundTripWorkbookTest {
                 cellValuesInFirstRowAsText);
     }
 
-    private HSSFRow sanityCheckForWorkbook() throws IOException {
+    @Test
+    @Ignore("WIP")
+    public void readCellValuesAsPlainNumbers() throws Exception {
+        Assert.fail("Not yet implemented");
+    }
+
+    private HSSFRow headerRow() throws IOException {
+        final HSSFSheet sampleDataWorksheet = sampleDataWorksheet();
+
+        final HSSFRow headerRow = sampleDataWorksheet.getRow(0);
+        Assume.assumeNotNull(headerRow);
+        return headerRow;
+    }
+
+    private HSSFSheet sampleDataWorksheet() throws IOException {
         final HSSFWorkbook simpleWorkbook = new HSSFWorkbook(new FileInputStream(simpleWorkbookFile));
         Assume.assumeThat(simpleWorkbook.getNumberOfSheets(), is(1));
 
         final HSSFSheet sampleDataWorksheet = simpleWorkbook.getSheet("Sample Data");
         Assume.assumeNotNull(sampleDataWorksheet);
-
-        final HSSFRow headerRow = sampleDataWorksheet.getRow(0);
-        Assume.assumeNotNull(headerRow);
-        return headerRow;
+        return sampleDataWorksheet;
     }
 }
