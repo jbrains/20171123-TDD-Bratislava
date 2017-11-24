@@ -48,16 +48,23 @@ public class CommandLineInterfaceTest {
     }
 
     private void readThenProcessLines(final Traversable<String> lines) throws IOException {
-        process(readLines(lines));
+        interpretAsCommands(readLines(lines));
     }
 
     private Reader readLines(final Traversable<String> lines) {
         return new StringReader(String.join(System.lineSeparator(), lines.toJavaList()));
     }
 
-    private void process(final Reader commandSource) throws IOException {
-        Traversable<String> lines = linesFrom(commandSource);
-        lines.forEach(barcodeScannedListener::onBarcode);
+    private void interpretAsCommands(final Reader commandSource) throws IOException {
+        interpretCommands(linesFrom(commandSource));
+    }
+
+    private void interpretCommands(final Traversable<String> lines) {
+        lines.forEach(this::interpretCommand);
+    }
+
+    private void interpretCommand(final String commandText) {
+        barcodeScannedListener.onBarcode(commandText);
     }
 
     private Traversable<String> linesFrom(final Reader commandSource) throws IOException {
