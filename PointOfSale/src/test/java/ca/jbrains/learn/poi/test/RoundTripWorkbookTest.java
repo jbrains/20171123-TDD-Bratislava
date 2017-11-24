@@ -18,6 +18,7 @@ import static org.hamcrest.Matchers.is;
 
 public class RoundTripWorkbookTest {
 
+    public static final double CLOSE_ENOUGH = 0.000001d;
     private File simpleWorkbookFile;
 
     @Before
@@ -62,6 +63,26 @@ public class RoundTripWorkbookTest {
                 plainNumbersColumn.map(Cell::getNumericCellValue));
     }
 
+    @Test
+    public void readCellValueAsCurrency() throws Exception {
+        final Cell firstMoneyAmountCell = firstBodyCellOf(columnOf(1, sampleDataWorksheet()));
+        Assert.assertEquals(7.95d, firstMoneyAmountCell.getNumericCellValue(), CLOSE_ENOUGH);
+
+        // The numbers are truly magic. HSSFDataFormat doesn't explain them.
+        final int magicNumberForSlovakEuroCurrencyFormat = 166;
+        Assert.assertEquals(
+                magicNumberForSlovakEuroCurrencyFormat,
+                firstMoneyAmountCell.getCellStyle().getDataFormat());
+    }
+
+    private List<Cell> columnOf(final int columnIndex, final HSSFSheet worksheet) throws IOException {
+        return columnOf(columnIndex, rowsOf(worksheet));
+    }
+
+    private Cell firstBodyCellOf(final List<Cell> column) {
+        return bodyRowsOf(column).take(1).get();
+    }
+
     private List<Cell> columnOf(final int columnIndex, final List<Row> bodyRows) {
         return bodyRows.map(each -> each.getCell(columnIndex, RETURN_BLANK_AS_NULL));
     }
@@ -70,7 +91,7 @@ public class RoundTripWorkbookTest {
         return List.ofAll(() -> sampleDataWorksheet.iterator());
     }
 
-    private List<Row> bodyRowsOf(final List<Row> table) {
+    private <T> List<T> bodyRowsOf(final List<T> table) {
         return table.drop(1);
     }
 
