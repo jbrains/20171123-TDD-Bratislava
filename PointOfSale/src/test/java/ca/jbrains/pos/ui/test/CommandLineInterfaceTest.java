@@ -1,6 +1,8 @@
 package ca.jbrains.pos.ui.test;
 
 import io.vavr.collection.List;
+import io.vavr.collection.Stream;
+import io.vavr.collection.Traversable;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Ignore;
@@ -36,7 +38,6 @@ public class CommandLineInterfaceTest {
     }
 
     @Test
-    @Ignore
     public void severalCommands() throws Exception {
         context.checking(new Expectations() {{
             oneOf(barcodeScannedListener).onBarcode("::barcode 1::");
@@ -48,9 +49,13 @@ public class CommandLineInterfaceTest {
     }
 
     private void process(final Reader commandSource) throws IOException {
-        final String theLine = new BufferedReader(commandSource).readLine();
-        List<String> lines = (theLine == null) ? List.empty() : List.of(theLine);
+        Traversable<String> lines = linesFrom(commandSource);
         lines.forEach(barcodeScannedListener::onBarcode);
+    }
+
+    private Traversable<String> linesFrom(final Reader commandSource) throws IOException {
+        final BufferedReader bufferedCommandSource = new BufferedReader(commandSource);
+        return Stream.ofAll(bufferedCommandSource.lines());
     }
 
     public interface BarcodeScannedListener {
