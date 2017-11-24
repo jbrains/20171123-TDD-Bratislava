@@ -12,17 +12,17 @@ public class InMemoryCatalogTest {
     public void productFound() throws Exception {
         final Price matchingPrice = Price.cents(1250);
         final InMemoryCatalog catalog = new InMemoryCatalog(
-                HashMap.of("12345", matchingPrice).toJavaMap());
+                HashMap.of("::any barcode::", matchingPrice).toJavaMap());
 
-        Assert.assertEquals(matchingPrice, catalog.findPrice("12345"));
+        Assert.assertEquals(matchingPrice, catalog.findPrice("::any barcode::"));
     }
 
     @Test
     public void productNotFound() throws Exception {
         final InMemoryCatalog catalog = new InMemoryCatalog(
                 HashMap.<String, Price>empty().toJavaMap());
-        
-        Assert.assertEquals(null, catalog.findPrice("99999"));
+
+        Assert.assertEquals(null, catalog.findPrice("::any missing barcode::"));
     }
 
     public static class InMemoryCatalog {
