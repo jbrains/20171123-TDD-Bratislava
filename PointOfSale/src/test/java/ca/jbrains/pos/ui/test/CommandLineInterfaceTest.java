@@ -24,7 +24,7 @@ public class CommandLineInterfaceTest {
             never(barcodeScannedListener);
         }});
 
-        process(new StringReader(""));
+        readThenProcessLines(List.empty());
     }
 
     @Test
@@ -33,7 +33,7 @@ public class CommandLineInterfaceTest {
             oneOf(barcodeScannedListener).onBarcode("::barcode::");
         }});
 
-        process(readLines(List.of("::barcode::")));
+        readThenProcessLines(List.of("::barcode::"));
     }
 
     @Test
@@ -44,10 +44,14 @@ public class CommandLineInterfaceTest {
             oneOf(barcodeScannedListener).onBarcode("::barcode 3::");
         }});
 
-        process(readLines(List.of("::barcode 1::", "::barcode 2::", "::barcode 3::")));
+        readThenProcessLines(List.of("::barcode 1::", "::barcode 2::", "::barcode 3::"));
     }
 
-    private Reader readLines(final List<String> lines) {
+    private void readThenProcessLines(final Traversable<String> lines) throws IOException {
+        process(readLines(lines));
+    }
+
+    private Reader readLines(final Traversable<String> lines) {
         return new StringReader(String.join(System.lineSeparator(), lines.toJavaList()));
     }
 
