@@ -49,41 +49,28 @@ public class CommandLineInterfaceTest {
         readThenProcessLines(List.of("::barcode 1::", "::barcode 2::", "::barcode 3::"));
     }
 
-    @Test
-    public void severalCommandsWithWhitespace() throws Exception {
-        context.checking(new Expectations() {{
-            oneOf(barcodeScannedListener).onBarcode("::barcode 1::");
-            oneOf(barcodeScannedListener).onBarcode("::barcode 2::");
-            oneOf(barcodeScannedListener).onBarcode("::barcode 3::");
-        }});
-
-        readThenProcessLines(List.of(
-                "",
-                "::barcode 1::",
-                "",
-                "::barcode 2::",
-                "",
-                "::barcode 3::",
-                ""));
-    }
-
     private void readThenProcessLines(final Traversable<String> lines) throws IOException {
-        interpretAsCommands(readLines(lines));
+        interpretCommandsFromSource(readLines(lines));
     }
 
     private Reader readLines(final Traversable<String> lines) {
         return new StringReader(String.join(System.lineSeparator(), lines.toJavaList()));
     }
 
-    private void interpretAsCommands(final Reader commandSource) throws IOException {
-        interpretCommands(new RemoveWhitespace().normalizeCommands(linesFrom(commandSource)));
+    private void interpretCommandsFromSource(final Reader commandSource) throws IOException {
+        interpretCommands(readCommands(commandSource, new RemoveWhitespace()));
     }
 
-    private void interpretCommands(final Traversable<String> lines) {
-        lines.forEach(this::interpretCommand);
+    private void interpretCommands(final Traversable<String> commandsAsText) {
+        commandsAsText.forEach(this::interpretCommand);
+    }
+
+    private Traversable<String> readCommands(final Reader commandSource, final NormalizeCommands normalizeCommands) {
+        return normalizeCommands.normalizeCommands(linesFrom(commandSource));
     }
 
     private void interpretCommand(final String commandText) {
+        // CONTRACT commandText is "normalized" (syntax is already correct)
         barcodeScannedListener.onBarcode(commandText);
     }
 
