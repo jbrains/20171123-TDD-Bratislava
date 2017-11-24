@@ -5,7 +5,6 @@ import io.vavr.collection.Stream;
 import io.vavr.collection.Traversable;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -34,7 +33,7 @@ public class CommandLineInterfaceTest {
             oneOf(barcodeScannedListener).onBarcode("::barcode::");
         }});
 
-        process(new StringReader("::barcode::"));
+        process(readLines(List.of("::barcode::")));
     }
 
     @Test
@@ -45,7 +44,11 @@ public class CommandLineInterfaceTest {
             oneOf(barcodeScannedListener).onBarcode("::barcode 3::");
         }});
 
-        process(new StringReader("::barcode 1::\n::barcode 2::\n::barcode 3::"));
+        process(readLines(List.of("::barcode 1::", "::barcode 2::", "::barcode 3::")));
+    }
+
+    private Reader readLines(final List<String> lines) {
+        return new StringReader(String.join(System.lineSeparator(), lines.toJavaList()));
     }
 
     private void process(final Reader commandSource) throws IOException {
